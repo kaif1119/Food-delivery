@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Loader = ({ message = 'Loading...' }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-stone-900/30 backdrop-blur-md z-50">

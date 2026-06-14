@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRestaurants } from '../features/restaurants/restaurantSlice';
 import RestaurantCard from '../components/RestaurantCard';
 import Loader from '../components/Loader';
-import { Search, MapPin, SlidersHorizontal, Info, RefreshCw } from 'lucide-react';
+import { Search, MapPin, Info, RefreshCw } from 'lucide-react';
 
 const Restaurants = () => {
   const dispatch = useDispatch();

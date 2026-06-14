@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Clock, MapPin } from 'lucide-react';
 
@@ -8,7 +7,6 @@ const RestaurantCard = ({ restaurant }) => {
     name,
     image,
     description,
-    address,
     city,
     rating,
     isOpen,
