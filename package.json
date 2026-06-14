@@ -1,0 +1,11 @@
+{
+  "name": "food-delivery-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm --prefix Backend start",
+    "dev": "npm --prefix Backend run dev",
+    "backend": "npm --prefix Backend start",
+    "backend:dev": "npm --prefix Backend run dev"
+  }
+}
