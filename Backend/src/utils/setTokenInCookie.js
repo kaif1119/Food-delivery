@@ -3,8 +3,7 @@ export function setTokenInCookie(res, user){
     httpOnly: true,
     secure: false,
     sameSite: "lax",
-    // maxAge: 15 * 60 * 1000, // 15 min,
-    maxAge: 1 * 60 * 1000, // 1 minute
+    maxAge: 15 * 60 * 1000, // 15 min,
   });
 
   res.cookie("refreshToken", user.refreshToken, {

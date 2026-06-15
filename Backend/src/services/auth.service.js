@@ -3,14 +3,16 @@ import {
   createUser,
   findByEmail,
   findById,
+  findByIdWithCredentials,
   updateRefreshToken,
 } from "../repositories/auth.repositorie.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import config from "../config/environement.js";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateToken.js";
-import { generateNewRefreshToken } from "../utils/generateNewRefreshToken.js";
 
 export async function userRegister(userPayload) {
   const { username, email, password, role, phoneNumber } = userPayload;
@@ -111,15 +113,34 @@ export async function userGetRefreshToken(refreshToken) {
     throw error;
   }
 
-  const tokenData = await generateNewRefreshToken(refreshToken);
-
-  if (!tokenData?.newAccessToken) {
-    const error = new Error("Access token not generated");
-    error.statusCode = 400;
+  // Verify the JWT signature and expiration
+  let decoded;
+  try {
+    decoded = jwt.verify(refreshToken, config.JWT_SECRET);
+  } catch (err) {
+    const error = new Error("Invalid or Expired Refresh Token");
+    error.statusCode = 401;
     throw error;
   }
 
-  await updateRefreshToken(tokenData.userId, tokenData.newRefreshToken);
+  // Find the user from DB (with the stored refresh token)
+  const user = await findByIdWithCredentials(decoded.id);
+  if (!user || user.refreshToken !== refreshToken) {
+    const error = new Error("User unauthorized or session expired");
+    error.statusCode = 401;
+    throw error;
+  }
 
-  return tokenData;
+  // Generate new tokens
+  const newAccessToken = generateAccessToken(user);
+  const newRefreshToken = generateRefreshToken(user);
+
+  // Update the new refresh token in database
+  await updateRefreshToken(user._id, newRefreshToken);
+
+  return {
+    userId: user._id,
+    newAccessToken,
+    newRefreshToken,
+  };
 }

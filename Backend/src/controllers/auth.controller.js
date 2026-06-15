@@ -138,9 +138,12 @@ export async function getNewRefreshToken(req, res) {
     return res.status(200).json({
       success: true,
       message: "New tokens generated successfully",
-      accessToken: tokenData.newAccessToken,
+      token: {
+        accessToken: tokenData.newAccessToken,
+        refreshToken: tokenData.newRefreshToken
+      },
     });
-    
+
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       success: false,

@@ -12,6 +12,10 @@ export async function findById(userId) {
   return await userModel.findById(userId).select("-password -refreshToken");
 }
 
+export async function findByIdWithCredentials(userId) {
+  return await userModel.findById(userId);
+}
+
 export async function updateRefreshToken(userId, refreshToken) {
   return await userModel.findByIdAndUpdate(
     userId,
