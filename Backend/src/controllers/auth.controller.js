@@ -1,5 +1,6 @@
 import {
   userGet,
+  userGetRefreshToken,
   userLogin,
   userLogout,
   userRegister,
@@ -8,16 +9,22 @@ import { setTokenInCookie } from "../utils/setTokenInCookie.js";
 
 export async function register(req, res) {
   try {
-    const { username, email, password, role } = req.body;
+    const { username, email, password, role, phoneNumber } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !phoneNumber) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
-    const user = await userRegister({ username, email, password, role });
+    const user = await userRegister({
+      username,
+      email,
+      password,
+      role,
+      phoneNumber,
+    });
 
     setTokenInCookie(res, user);
 
@@ -99,6 +106,39 @@ export async function getMe(req, res) {
       success: true,
       message: "User fetched successfully",
       user,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Internal server error",
+    });
+  }
+}
+
+export async function getNewRefreshToken(req, res) {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    const accessToken = await userGetRefreshToken(refreshToken);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+      // maxAge: 1 * 60 * 1000, // 1 minute
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // maxAge: 1 * 60 * 1000, // 1 minute
+    });
+    return res.status(200).json({
+      success: true,
+      message: "New access token generated successfully",
+      accessToken,
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({

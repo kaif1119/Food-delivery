@@ -10,9 +10,10 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateToken.js";
+import { generateNewRefreshToken } from "../utils/generateNewRefreshToken.js";
 
 export async function userRegister(userPayload) {
-  const { username, email, password, role } = userPayload;
+  const { username, email, password, role, phoneNumber } = userPayload;
 
   const isExist = await findByEmail(email);
 
@@ -25,6 +26,7 @@ export async function userRegister(userPayload) {
   const userData = {
     username,
     email,
+    phoneNumber,
     password: hashPassword,
     role: role || "user",
   };
@@ -93,12 +95,29 @@ export async function userLogout(refreshToken) {
 }
 
 export async function userGet(userId) {
-   const user = await findById(userId)
-   if(!user){
+  const user = await findById(userId);
+  if (!user) {
     const error = new Error("User not found");
     error.statusCode = 404;
-    throw error
-   }
-   return user
+    throw error;
+  }
+  return user;
 }
 
+export async function userGetRefreshToken(refreshToken) {
+  if (!refreshToken) {
+    const error = new Error("User unauthorized");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const AccessToken = await generateNewRefreshToken(refreshToken);
+
+  if (!AccessToken) {
+    const error = new Error("Access token not generated");
+    error.statusCode = 400;
+    throw error;
+  }
+console.log(AccessToken)
+  return newAccessToken ;
+}
