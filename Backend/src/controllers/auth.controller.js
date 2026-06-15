@@ -119,27 +119,28 @@ export async function getNewRefreshToken(req, res) {
   try {
     const refreshToken = req.cookies.refreshToken;
 
-    const accessToken = await userGetRefreshToken(refreshToken);
+    const tokenData = await userGetRefreshToken(refreshToken);
 
-    res.cookie("accessToken", accessToken, {
+    res.cookie("accessToken", tokenData.newAccessToken, {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
-      // maxAge: 1 * 60 * 1000, // 1 minute
+      maxAge: 15 * 60 * 1000, //15 mint
     });
-    res.cookie("refreshToken", refreshToken, {
+
+    res.cookie("refreshToken", tokenData.newRefreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      // maxAge: 1 * 60 * 1000, // 1 minute
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7d
     });
+
     return res.status(200).json({
       success: true,
-      message: "New access token generated successfully",
-      accessToken,
+      message: "New tokens generated successfully",
+      accessToken: tokenData.newAccessToken,
     });
+    
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       success: false,

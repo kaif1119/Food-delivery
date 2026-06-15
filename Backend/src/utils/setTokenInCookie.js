@@ -1,6 +1,3 @@
-
-
-
 export function setTokenInCookie(res, user){
   res.cookie("accessToken", user.accessToken, {
     httpOnly: true,

@@ -111,13 +111,15 @@ export async function userGetRefreshToken(refreshToken) {
     throw error;
   }
 
-  const AccessToken = await generateNewRefreshToken(refreshToken);
+  const tokenData = await generateNewRefreshToken(refreshToken);
 
-  if (!AccessToken) {
+  if (!tokenData?.newAccessToken) {
     const error = new Error("Access token not generated");
     error.statusCode = 400;
     throw error;
   }
-console.log(AccessToken)
-  return newAccessToken ;
+
+  await updateRefreshToken(tokenData.userId, tokenData.newRefreshToken);
+
+  return tokenData;
 }
