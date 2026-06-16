@@ -6,7 +6,7 @@ export const fetchRestaurants = createAsyncThunk(
   'restaurants/fetchRestaurants',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/get-restaurants');
+      const response = await api.get('/restaurants');
       // Response contains: { success: true, message: "...", restaurants: [...] }
       return response.data.restaurants;
     } catch (error) {
@@ -49,12 +49,45 @@ export const createRestaurant = createAsyncThunk(
   }
 );
 
+// Thunk to update a restaurant
+export const updateRestaurant = createAsyncThunk(
+  'restaurants/updateRestaurant',
+  async ({ id, restaurantData }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/restaurants/${id}`, restaurantData);
+      // Response contains: { success: true, message: "...", data: {...} }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to update restaurant'
+      );
+    }
+  }
+);
+
+// Thunk to delete a restaurant
+export const deleteRestaurant = createAsyncThunk(
+  'restaurants/deleteRestaurant',
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/restaurants/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to delete restaurant'
+      );
+    }
+  }
+);
+
 const initialState = {
   restaurants: [],
   currentRestaurant: null,
   isLoading: false,
   error: null,
   createSuccess: false,
+  updateSuccess: false,
+  deleteSuccess: false,
 };
 
 const restaurantSlice = createSlice({
@@ -66,6 +99,12 @@ const restaurantSlice = createSlice({
     },
     resetCreateSuccess: (state) => {
       state.createSuccess = false;
+    },
+    resetUpdateSuccess: (state) => {
+      state.updateSuccess = false;
+    },
+    resetDeleteSuccess: (state) => {
+      state.deleteSuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -114,9 +153,57 @@ const restaurantSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
         state.createSuccess = false;
+      })
+
+      // Update restaurant
+      .addCase(updateRestaurant.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+        state.updateSuccess = false;
+      })
+      .addCase(updateRestaurant.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.updateSuccess = true;
+        const index = state.restaurants.findIndex((r) => r._id === action.payload._id);
+        if (index !== -1) {
+          state.restaurants[index] = action.payload;
+        }
+        if (state.currentRestaurant && state.currentRestaurant._id === action.payload._id) {
+          state.currentRestaurant = action.payload;
+        }
+      })
+      .addCase(updateRestaurant.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        state.updateSuccess = false;
+      })
+
+      // Delete restaurant
+      .addCase(deleteRestaurant.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+        state.deleteSuccess = false;
+      })
+      .addCase(deleteRestaurant.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.deleteSuccess = true;
+        state.restaurants = state.restaurants.filter((r) => r._id !== action.payload);
+        if (state.currentRestaurant && state.currentRestaurant._id === action.payload) {
+          state.currentRestaurant = null;
+        }
+      })
+      .addCase(deleteRestaurant.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        state.deleteSuccess = false;
       });
   },
 });
 
-export const { clearRestaurantError, resetCreateSuccess } = restaurantSlice.actions;
+export const {
+  clearRestaurantError,
+  resetCreateSuccess,
+  resetUpdateSuccess,
+  resetDeleteSuccess,
+} = restaurantSlice.actions;
 export default restaurantSlice.reducer;

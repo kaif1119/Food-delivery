@@ -1,5 +1,6 @@
 import {
   createRestaurantService,
+  deleteRestaurantService,
   getRestaurantsByIdService,
   getRestaurantsService,
   updateRestaurantService,
@@ -9,9 +10,6 @@ export async function createRestaurant(req, res) {
   try {
     const ownerId = req.user.id;
     const restaurantData = req.body;
-
-    // console.log("ownerId is: =>",ownerId)
-    // console.log("restaurantData is: =>", restaurantData);
 
     const { name, address, city } = restaurantData;
 
@@ -56,14 +54,14 @@ export async function getRestaurant(req, res) {
 
 export async function getRestaurantById(req, res) {
   try {
-    const restaurantId = req.params.id;
+    const { id } = req.params;
 
-    const restaurantData = await getRestaurantsByIdService(restaurantId);
+    const restaurant = await getRestaurantsByIdService(id);
 
     return res.status(200).json({
       success: true,
-      message: "Restaurant fetched by id successfully",
-      restaurant: restaurantData,
+      message: "Restaurant fetched successfully",
+      restaurant,
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
@@ -76,16 +74,39 @@ export async function getRestaurantById(req, res) {
 export async function updateRestaurant(req, res) {
   try {
     const { id } = req.params;
-    const restuarentsUpdateData = req.body;
+    const ownerId = req.user.id;
+    const restaurantUpdateData = req.body;
 
-    // console.log("Restaurant id by params: =>", id);
-
-    const restaurant = await updateRestaurantService(restuarentsUpdateData, id);
+    const restaurant = await updateRestaurantService(
+      id,
+      ownerId,
+      restaurantUpdateData,
+    );
 
     return res.status(200).json({
       success: true,
       message: "Restaurant updated successfully",
-      data: restaurant,
+      restaurant,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Internal server error",
+    });
+  }
+}
+
+export async function deleteRestaurantController(req, res) {
+  try {
+    const { id } = req.params;
+    const ownerId = req.user.id;
+
+    const deletedRestaurant = await deleteRestaurantService(id, ownerId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurant deleted successfully",
+      restaurant: deletedRestaurant,
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({

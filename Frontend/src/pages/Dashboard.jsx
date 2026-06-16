@@ -1,19 +1,30 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { fetchRestaurants } from '../features/restaurants/restaurantSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchRestaurants, deleteRestaurant } from '../features/restaurants/restaurantSlice';
 import RestaurantCard from '../components/RestaurantCard';
 import Loader from '../components/Loader';
 import { User, Mail, Shield, Plus, Building2, Star, ShoppingBag } from 'lucide-react';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { restaurants, isLoading } = useSelector((state) => state.restaurants);
 
   useEffect(() => {
     dispatch(fetchRestaurants());
   }, [dispatch]);
+
+  const handleEdit = (id) => {
+    navigate(`/edit-restaurant/${id}`);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this restaurant? This action is permanent and cannot be undone.")) {
+      dispatch(deleteRestaurant(id));
+    }
+  };
 
   // Filter restaurants owned by this user
   const myRestaurants = restaurants.filter((r) => {
@@ -131,7 +142,13 @@ const Dashboard = () => {
               {myRestaurants.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {myRestaurants.map((restaurant) => (
-                    <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+                    <RestaurantCard
+                      key={restaurant._id}
+                      restaurant={restaurant}
+                      showActions={true}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                    />
                   ))}
                 </div>
               ) : (

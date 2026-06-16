@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Star, Clock, MapPin } from 'lucide-react';
+import { Star, Clock, MapPin, Edit2, Trash2 } from 'lucide-react';
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant, showActions = false, onEdit, onDelete }) => {
   const {
     _id,
     name,
@@ -95,6 +95,36 @@ const RestaurantCard = ({ restaurant }) => {
             <span className="truncate capitalize">{city}</span>
           </div>
         </div>
+
+        {showActions && (
+          <>
+            <hr className="border-stone-100 my-3" />
+            <div className="flex gap-2">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (onEdit) onEdit(_id);
+                }}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 border border-stone-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-250 text-stone-600 rounded-xl font-bold text-xs transition-all cursor-pointer"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>Edit</span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (onDelete) onDelete(_id);
+                }}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 border border-stone-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-250 text-stone-600 rounded-xl font-bold text-xs transition-all cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </Link>
   );

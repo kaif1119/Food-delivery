@@ -4,21 +4,38 @@ export async function createRestaurant(data) {
   const restaurant = await restaurantModel.create(data);
   return restaurant;
 }
+
 export async function findRestaurantById(id) {
-  return await restaurantModel
-    .findById(id).populate("ownerId", "username email");
+  const restaurant = await restaurantModel
+    .findById(id)
+    .populate("ownerId", "username email");
+
+  return restaurant;
 }
+
 export async function findAllRestaurants() {
-  return await restaurantModel.find().populate("ownerId", "username email");
+  const restaurants = await restaurantModel
+    .find()
+    .populate("ownerId", "username email");
+
+  return restaurants;
 }
 
 export async function findRestaurantByIdAndUpdate(id, data) {
-  const updatedRestaurant = await restaurantModel.findByIdAndUpdate(id, data, {
-    returnDocument: "after",
-  });
+  const updatedRestaurant = await restaurantModel
+    .findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    })
+    .populate("ownerId", "username email");
+
   return updatedRestaurant;
 }
+
 export async function deleteRestaurant(id) {
-  const deletedRestaurant = await restaurantModel.findByIdAndDelete(id);
+  const deletedRestaurant = await restaurantModel
+    .findByIdAndDelete(id)
+    .populate("ownerId", "username email");
+
   return deletedRestaurant;
 }

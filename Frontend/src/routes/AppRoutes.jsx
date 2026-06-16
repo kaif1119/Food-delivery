@@ -5,6 +5,7 @@ import Register from '../pages/Register';
 import Restaurants from '../pages/Restaurants';
 import RestaurantDetails from '../pages/RestaurantDetails';
 import CreateRestaurant from '../pages/CreateRestaurant';
+import EditRestaurant from '../pages/EditRestaurant';
 import Dashboard from '../pages/Dashboard';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -50,6 +51,14 @@ const AppRoutes = () => {
         element={
           <RoleProtectedRoute allowedRoles={['restaurantOwner', 'admin']}>
             <CreateRestaurant />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/edit-restaurant/:id"
+        element={
+          <RoleProtectedRoute allowedRoles={['restaurantOwner', 'admin']}>
+            <EditRestaurant />
           </RoleProtectedRoute>
         }
       />
