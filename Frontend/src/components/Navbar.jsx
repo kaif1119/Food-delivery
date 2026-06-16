@@ -41,7 +41,7 @@ const Navbar = () => {
             <div className="bg-amber-500 text-white p-2 rounded-xl shadow-md shadow-amber-500/25">
               <Utensils className="w-5 h-5" />
             </div>
-            <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+            <span className="font-extrabold text-xl tracking-tight bg-gradient-to from-amber-500 to-orange-600 bg-clip-text text-transparent">
               TastyTrail 
             </span>
           </Link>
