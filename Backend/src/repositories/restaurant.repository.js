@@ -12,7 +12,7 @@ export async function findAllRestaurants() {
   return await restaurantModel.find().populate("ownerId", "username email");
 }
 
-export async function updateRestaurant(id, data) {
+export async function findRestaurantByIdAndUpdate(id, data) {
   const updatedRestaurant = await restaurantModel.findByIdAndUpdate(id, data, {
     returnDocument: "after",
   });

@@ -18,6 +18,7 @@ app.use("/api", restaurantRouter);
 
 // Catch-all route to serve React Router index.html for Single Page App (SPA)
 // Bypasses path-to-regexp syntax error in Express 5 by using a Regular Expression
+
 // app.get(/^(?!\/api).*$/, (req, res) => {
 //   res.sendFile(path.join(frontendPath, 'index.html'));
 // });

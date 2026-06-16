@@ -125,6 +125,7 @@ export async function userGetRefreshToken(refreshToken) {
 
   // Find the user from DB (with the stored refresh token)
   const user = await findByIdWithCredentials(decoded.id);
+  
   if (!user || user.refreshToken !== refreshToken) {
     const error = new Error("User unauthorized or session expired");
     error.statusCode = 401;

@@ -2,6 +2,7 @@ import {
   createRestaurantService,
   getRestaurantsByIdService,
   getRestaurantsService,
+  updateRestaurantService,
 } from "../services/restaurant.service.js";
 
 export async function createRestaurant(req, res) {
@@ -63,6 +64,28 @@ export async function getRestaurantById(req, res) {
       success: true,
       message: "Restaurant fetched by id successfully",
       restaurant: restaurantData,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Internal server error",
+    });
+  }
+}
+
+export async function updateRestaurant(req, res) {
+  try {
+    const { id } = req.params;
+    const restuarentsUpdateData = req.body;
+
+    // console.log("Restaurant id by params: =>", id);
+
+    const restaurant = await updateRestaurantService(restuarentsUpdateData, id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurant updated successfully",
+      data: restaurant,
     });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
