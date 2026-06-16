@@ -7,7 +7,7 @@ export const injectStore = (_store) => {
 };
 
 const api = axios.create({
-  baseURL: '/api', // Matches Vite proxy path to route to http://localhost:3000/api
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api', // Dynamic for production deployment
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
