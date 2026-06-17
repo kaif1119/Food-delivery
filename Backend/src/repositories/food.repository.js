@@ -1,14 +1,13 @@
 import foodModel from "../models/food.model.js";
 
 export async function findFoodById(id) {
-  const food = await foodModel
-    .findById(id)
+  const food = await foodModel.findById(id)
     .populate("restaurantId", "name ownerId city");
   return food;
 }
 
 export async function findAllFoods() {
-  const foods = awaitfoodModel.find().populate("restaurantId", "name city");
+  const foods = await foodModel.find().populate("restaurantId", "name city");
   return foods;
 }
 
