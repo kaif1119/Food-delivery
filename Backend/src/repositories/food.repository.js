@@ -7,7 +7,7 @@ export async function findFoodById(id) {
 }
 
 export async function findAllFoods() {
-  const foods = await foodModel.find().populate("restaurantId", "name city");
+  const foods = await foodModel.find();
   return foods;
 }
 

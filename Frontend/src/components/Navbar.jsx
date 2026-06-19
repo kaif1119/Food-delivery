@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../features/auth/authSlice';
-import { Menu, X, LogOut, User, PlusCircle, LayoutDashboard, Utensils } from 'lucide-react';
+import { Menu, X, LogOut, User, PlusCircle, LayoutDashboard, Utensils, ShoppingCart } from 'lucide-react';
 
 const Navbar = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+  const cartItemsCount = cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,6 +79,24 @@ const Navbar = () => {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-4">
+            {isAuthenticated && (
+              <Link
+                to="/cart"
+                className={`relative p-2.5 rounded-xl transition-all duration-200 ${
+                  isActive('/cart')
+                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                    : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
+                }`}
+                title="Your Cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartItemsCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </Link>
+            )}
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-stone-105 rounded-xl border border-stone-200/50">
@@ -137,6 +157,23 @@ const Navbar = () => {
                 className={mobileLinkClass('/restaurants')}
               >
                 Browse Restaurants
+              </Link>
+            )}
+            {isAuthenticated && (
+              <Link
+                to="/cart"
+                onClick={() => setIsOpen(false)}
+                className={`${mobileLinkClass('/cart')} flex items-center justify-between`}
+              >
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>My Cart</span>
+                </div>
+                {cartItemsCount > 0 && (
+                  <span className="bg-rose-500 text-white text-xs font-black px-2 py-0.5 rounded-full">
+                    {cartItemsCount}
+                  </span>
+                )}
               </Link>
             )}
 

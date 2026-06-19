@@ -6,7 +6,10 @@ import Restaurants from '../pages/Restaurants';
 import RestaurantDetails from '../pages/RestaurantDetails';
 import CreateRestaurant from '../pages/CreateRestaurant';
 import EditRestaurant from '../pages/EditRestaurant';
+import CreateFood from '../pages/CreateFood';
+import EditFood from '../pages/EditFood';
 import Dashboard from '../pages/Dashboard';
+import Cart from '../pages/Cart';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
 import RoleProtectedRoute from '../components/RoleProtectedRoute';
@@ -44,6 +47,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Role Protected Routes (Restricted to Restaurant Owners and Admins) */}
       <Route
@@ -62,6 +73,22 @@ const AppRoutes = () => {
           </RoleProtectedRoute>
         }
       />
+      <Route
+        path="/restaurants/:restaurantId/add-food"
+        element={
+          <RoleProtectedRoute allowedRoles={['restaurantOwner', 'admin']}>
+            <CreateFood />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/edit-food/:id"
+        element={
+          <RoleProtectedRoute allowedRoles={['restaurantOwner', 'admin']}>
+            <EditFood />
+          </RoleProtectedRoute>
+        }
+      />
 
       {/* Catch-all 404 Route */}
       <Route path="*" element={<NotFound />} />
@@ -70,3 +97,4 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
+

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser, clearError } from '../features/auth/authSlice';
-import { User, Mail, Lock, UserPlus, AlertCircle, Briefcase } from 'lucide-react';
+import { User, Mail, Lock, UserPlus, AlertCircle, Briefcase, Phone } from 'lucide-react';
 import Loader from '../components/Loader';
 
 const Register = () => {
@@ -11,6 +11,7 @@ const Register = () => {
     email: '',
     password: '',
     role: 'user', // Defaults to 'user'
+    phoneNumber: '',
   });
 
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.username || !formData.email || !formData.password) return;
+    if (!formData.username || !formData.email || !formData.password || !formData.phoneNumber) return;
     dispatch(registerUser(formData));
   };
 
@@ -97,6 +98,25 @@ const Register = () => {
                 onChange={handleChange}
                 className="block w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all text-sm font-medium"
                 placeholder="you@example.com"
+              />
+            </div>
+          </div>
+
+          {/* Phone Number */}
+          <div>
+            <label className="block text-xs font-bold text-stone-600 uppercase mb-2">Phone Number</label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-stone-400">
+                <Phone className="w-5 h-5" />
+              </span>
+              <input
+                type="tel"
+                name="phoneNumber"
+                required
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="block w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 focus:bg-white transition-all text-sm font-medium"
+                placeholder="e.g. +919876543210"
               />
             </div>
           </div>

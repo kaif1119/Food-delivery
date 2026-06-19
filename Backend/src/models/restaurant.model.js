@@ -4,7 +4,7 @@ const restaurantSchema = new mongoose.Schema(
   {
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "Users",
       required: true,
     },
 
@@ -70,6 +70,6 @@ const restaurantSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const restaurantModel = mongoose.model("restaurants", restaurantSchema);
+const restaurantModel = mongoose.model("Restaurants", restaurantSchema);
 
 export default restaurantModel;
